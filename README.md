@@ -70,3 +70,23 @@ The response contains:
 }
 ```
 
+## UML Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant Client as Test Client
+    participant API as Filter Microservice API
+    participant Logic as Text Transformation Logic
+
+    Client->>API: POST /api/text_filter\nJSON body with text and transformations
+
+    API->>Logic: Parse request data
+    API->>Logic: Apply lowercase transformation
+    API->>Logic: Remove punctuation
+    API->>Logic: Censor keywords
+    API->>Logic: Detect unknown transformations
+
+    Logic-->>API: Return filtered text and results
+
+    API-->>Client: JSON response with filtered_text,\napplied_transformations,\nunknown_transformations
+```
