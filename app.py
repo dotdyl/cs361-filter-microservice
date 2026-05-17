@@ -5,13 +5,13 @@ import re
 app = Flask(__name__)
 app.json.sort_keys = False
 
-def lowercase(text, target_keywords):
+def lowercase(text, **kwargs):
     return text.lower()
 
-def remove_punctuation(text, target_keywords):
+def remove_punctuation(text, **kwargs):
     return text.translate(str.maketrans("", "", string.punctuation))
 
-def censor_keywords(text, target_keywords):
+def censor_keywords(text, target_keywords=None, **kwargs):
     if target_keywords:
         for keyword in target_keywords:
             text = re.sub(rf"\b{re.escape(keyword)}\b", "***", text, flags=re.IGNORECASE)
