@@ -76,17 +76,42 @@ The response contains:
 sequenceDiagram
     participant Client as Test Client
     participant API as Filter Microservice API
-    participant Logic as Text Transformation Logic
+    participant Logic as Transformation 
 
-    Client->>API: POST /api/text_filter\nJSON body with text and transformations
+    Client->>API: POST /api/text_filter
 
-    API->>Logic: Parse request data
-    API->>Logic: Apply lowercase transformation
-    API->>Logic: Remove punctuation
-    API->>Logic: Censor keywords
-    API->>Logic: Detect unknown transformations
+    Note over Client,API: Request Body contains:\ntext\ntarget_keywords\ntransformations
 
-    Logic-->>API: Return filtered text and results
+    activate API
 
-    API-->>Client: JSON response with filtered_text,\napplied_transformations,\nunknown_transformations
+    API->>Logic: Parse JSON request
+    activate Logic
+
+    Logic->>Logic: Read original text
+    Logic->>Logic: Process transformations in order
+
+    alt lowercase transformation
+        Logic->>Logic: Convert text to lowercase
+    end
+
+    alt remove_punctuation transformation
+        Logic->>Logic: Remove punctuation symbols
+    end
+
+    alt censor_keywords transformation
+        Logic->>Logic: Replace target keywords with ***
+    end
+
+    alt unknown transformation detected
+        Logic->>Logic: Add transformation to unknown_transformations list
+    end
+
+    Logic-->>API: Return filtered text + results
+    deactivate Logic
+
+    API-->>Client: JSON Response
+
+    Note over API,Client: Response contains:\noriginal_text\nfiltered_text\napplied_transformations\nunknown_transformations
+
+    deactivate API
 ```
