@@ -5,15 +5,15 @@ import re
 app = Flask(__name__)
 app.json.sort_keys = False
 
-def lowercase(text, **kwargs):
+def lowercase(text, *args):
     return text.lower()
 
-def remove_punctuation(text, **kwargs):
+def remove_punctuation(text, *args):
     return text.translate(str.maketrans("", "", string.punctuation))
 
-def censor_keywords(text, target_keywords=None, **kwargs):
-    if target_keywords:
-        for keyword in target_keywords:
+def censor_keywords(text, *args):
+    if args:
+        for keyword in args:
             text = re.sub(rf"\b{re.escape(keyword)}\b", "***", text, flags=re.IGNORECASE)
     return text
 
@@ -51,7 +51,7 @@ def transform_text():
     for transform in requested_transforms:
         if transform in TRANSFORMATIONS:
             response["applied_transformations"].append(transform)
-            response["filtered_text"] = TRANSFORMATIONS[transform](response["filtered_text"], target_keywords)
+            response["filtered_text"] = TRANSFORMATIONS[transform](response["filtered_text"], *target_keywords)
         else:
             response["unknown_transformations"].append(transform)
             

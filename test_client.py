@@ -15,4 +15,5 @@ body = {
 
 response = requests.post(url, json=body)
 
-print(json.dumps(response.json(), indent=4))
+print(response.status_code)
+print(response.text)
